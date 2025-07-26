@@ -192,7 +192,7 @@ export default function LandingPage() {
                   Email: <a href="mailto:support@holaiocrm.com" className="hover:text-cyan-400 transition">support@holaiocrm.com</a>
                 </p>
                 <p className="text-xs md:text-sm text-cyan-100">
-                  Phone: <a href="tel:+1234567890" className="hover:text-cyan-400 transition">+1 (234) 567-890</a>
+                  Phone: <a href="tel:+1234567890" className="hover:text-cyan-400 transition">+91 (234) 567-890</a>
                 </p>
               </div>
             </div>
