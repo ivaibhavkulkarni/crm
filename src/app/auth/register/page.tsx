@@ -66,7 +66,7 @@ export default function RegisterPage() {
         <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
           <h2 className="text-2xl text-gray-800 mb-6 text-center">Register</h2>
           <form className="space-y-4" onSubmit={handleSubmit}>
-            {['first name', 'last name', 'Company', 'mobile number', 'email', 'password'].map((field) => (
+            {['firstName', 'lastName', 'company', 'mobile', 'email', 'password'].map((field) => (
               <div key={field}>
                 <label htmlFor={field} className="block text-sm font-medium text-gray-700 capitalize">
                   {field === 'mobile' ? 'Mobile' : field.replace(/([A-Z])/g, ' $1')}
