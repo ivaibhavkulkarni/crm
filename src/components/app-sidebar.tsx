@@ -86,10 +86,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const user = useUser();
   const router = useRouter();
 
-  const handleLogout = () => {
-    localStorage.removeItem("token")
-    router.push("/")
-  }
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/auth/login");
+  };
 
   const initials = user?.initials;
   const name = user?.name;
