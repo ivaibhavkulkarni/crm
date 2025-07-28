@@ -1,10 +1,12 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { verifyToken } from "@/lib/auth";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { verifyToken } from '@/lib/auth';
+import { connectDB } from '@/lib/db';
+import { User } from '@/lib/models/User';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 import {
   Users,
   Wrench,
@@ -16,27 +18,40 @@ import {
   AlertTriangle,
   Plus,
   Eye,
-} from "lucide-react"
+} from 'lucide-react';
 
 export default async function DashboardPage() {
   const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
+  const token = cookieStore.get('token')?.value;
 
   if (!token) {
-    redirect("/auth/login");
+    redirect('/auth/login');
   }
 
-  const user = verifyToken(token);
-  if (!user || typeof user === "string" || !("email" in user)) {
-    redirect("/auth/login");
+  const payload = verifyToken(token);
+  if (!payload || typeof payload === 'string' || !('id' in payload)) {
+    redirect('/auth/login');
   }
+
+  await connectDB();
+  const user = await User.findById(payload.id);
+  if (!user) {
+    redirect('/auth/login');
+  }
+
+  const fullName = `${user.firstName} ${user.lastName}`;
 
   return (
     <div className="space-y-6 p-4 sm:p-6">
       {/* Welcome Section */}
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Welcome back,<br/>{(user as { email: string }).email}!</h1>
-        <p className="text-sm sm:text-base text-muted-foreground">Here's what's happening with your repair shop today.</p>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+          Welcome back,<br />
+          {fullName}!
+        </h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
+          Here's what's happening with your repair shop today.
+        </p>
       </div>
 
       {/* Stats Cards */}
@@ -111,7 +126,9 @@ export default async function DashboardPage() {
               <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
               <div className="flex-1 space-y-1">
                 <p className="text-sm font-medium">New job sheet created</p>
-                <p className="text-xs text-muted-foreground">Samsung Galaxy S21 battery replacement • 15 minutes ago</p>
+                <p className="text-xs text-muted-foreground">
+                  Samsung Galaxy S21 battery replacement • 15 minutes ago
+                </p>
               </div>
               <Badge variant="outline">In Progress</Badge>
             </div>
@@ -241,5 +258,5 @@ export default async function DashboardPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }
