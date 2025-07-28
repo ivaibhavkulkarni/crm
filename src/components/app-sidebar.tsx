@@ -49,6 +49,11 @@ const data = {
       icon: Home,
     },
     {
+      title: "Customers",
+      url: "/dashboard/customers",
+      icon: Users,
+    },
+    {
       title: "Job Sheets",
       url: "/dashboard/job-sheets",
       icon: FileText,
