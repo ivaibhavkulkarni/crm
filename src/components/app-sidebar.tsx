@@ -77,12 +77,7 @@ const data = {
       title: "Analytics",
       url: "/dashboard/analytics",
       icon: BarChart3,
-    },
-    {
-      title: "Notifications",
-      url: "/dashboard/notifications",
-      icon: Bell,
-    },
+    }
   ],
 }
 

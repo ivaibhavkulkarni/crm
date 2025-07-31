@@ -385,7 +385,7 @@ export default function JobSheetsPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="estimated-cost">Estimated Cost ($)</Label>
+                    <Label htmlFor="estimated-cost">Estimated Cost (₹)</Label>
                     <Input id="estimated-cost" type="number" placeholder="0.00" />
                   </div>
                   <div>
@@ -494,7 +494,7 @@ export default function JobSheetsPage() {
                   <TableCell>
                     <Badge variant={getStatusColor(job.status)}>{job.status}</Badge>
                   </TableCell>
-                  <TableCell>${job.estimatedCost}</TableCell>
+                  <TableCell>₹{job.estimatedCost}</TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-2">
                       <Button variant="ghost" size="sm" onClick={() => setSelectedJobSheet(job)}>
@@ -548,7 +548,7 @@ export default function JobSheetsPage() {
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Estimated Cost</Label>
-                  <p className="text-sm text-muted-foreground">${selectedJobSheet.estimatedCost}</p>
+                  <p className="text-sm text-muted-foreground">₹{selectedJobSheet.estimatedCost}</p>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
