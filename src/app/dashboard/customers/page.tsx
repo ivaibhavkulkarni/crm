@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -67,55 +67,54 @@ export default function CustomersPage() {
   )
 
   return (
-    <div className="space-y-6 p-4 sm:p-6">
-      {/* Header Section */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Customer Management</h1>
-          <p className="text-sm sm:text-base text-muted-foreground">Manage your customer database and relationships</p>
+          <h1 className="text-3xl font-bold tracking-tight">Customer Management</h1>
+          <p className="text-muted-foreground">Manage your customer database and relationships</p>
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="w-full sm:w-auto">
+            <Button>
               <Plus className="mr-2 h-4 w-4" />
               Add Customer
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-[90vw] sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle>Add New Customer</DialogTitle>
               <DialogDescription>Enter customer details to add them to your database.</DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right sm:col-span-1">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
                   Name
                 </Label>
-                <Input id="name" className="sm:col-span-3" />
+                <Input id="name" className="col-span-3" />
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
-                <Label htmlFor="email" className="text-right sm:col-span-1">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="email" className="text-right">
                   Email
                 </Label>
-                <Input id="email" type="email" className="sm:col-span-3" />
+                <Input id="email" type="email" className="col-span-3" />
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
-                <Label htmlFor="phone" className="text-right sm:col-span-1">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="phone" className="text-right">
                   Phone
                 </Label>
-                <Input id="phone" type="tel" className="sm:col-span-3" />
+                <Input id="phone" type="tel" className="col-span-3" />
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
-                <Label htmlFor="address" className="text-right sm:col-span-1">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="address" className="text-right">
                   Address
                 </Label>
-                <Textarea id="address" className="sm:col-span-3" />
+                <Textarea id="address" className="col-span-3" />
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
-                <Label htmlFor="notes" className="text-right sm:col-span-1">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="notes" className="text-right">
                   Notes
                 </Label>
-                <Textarea id="notes" className="sm:col-span-3" />
+                <Textarea id="notes" className="col-span-3" />
               </div>
             </div>
             <div className="flex justify-end space-x-2">
@@ -128,134 +127,90 @@ export default function CustomersPage() {
         </Dialog>
       </div>
 
-      {/* Customer Database Card */}
       <Card>
         <CardHeader>
           <CardTitle>Customer Database</CardTitle>
           <CardDescription>Search and manage all your customers</CardDescription>
-          <div className="flex items-center space-x-2 mt-4">
+          <div className="flex items-center space-x-2">
             <Search className="h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search customers..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full sm:max-w-sm"
+              className="max-w-sm"
             />
           </div>
         </CardHeader>
         <CardContent>
-          {/* Desktop Table View */}
-          <div className="hidden sm:block">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Customer</TableHead>
-                  <TableHead>Contact</TableHead>
-                  <TableHead>Repairs</TableHead>
-                  <TableHead>Last Visit</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredCustomers.map((customer) => (
-                  <TableRow key={customer.id}>
-                    <TableCell>
-                      <div>
-                        <div className="font-medium">{customer.name}</div>
-                        <div className="text-sm text-muted-foreground flex items-center">
-                          <MapPin className="h-3 w-3 mr-1" />
-                          {customer.address.split(",")[0]}
-                        </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Customer</TableHead>
+                <TableHead>Contact</TableHead>
+                <TableHead>Repairs</TableHead>
+                <TableHead>Last Visit</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredCustomers.map((customer) => (
+                <TableRow key={customer.id}>
+                  <TableCell>
+                    <div>
+                      <div className="font-medium">{customer.name}</div>
+                      <div className="text-sm text-muted-foreground flex items-center">
+                        <MapPin className="h-3 w-3 mr-1" />
+                        {customer.address.split(",")[0]}
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="space-y-1">
-                        <div className="flex items-center text-sm">
-                          <Mail className="h-3 w-3 mr-1" />
-                          {customer.email}
-                        </div>
-                        <div className="flex items-center text-sm">
-                          <Phone className="h-3 w-3 mr-1" />
-                          {customer.phone}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">{customer.totalRepairs} repairs</Badge>
-                    </TableCell>
-                    <TableCell>{customer.lastVisit}</TableCell>
-                    <TableCell>
-                      <Badge variant={customer.status === "VIP" ? "default" : "secondary"}>{customer.status}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center space-x-2">
-                        <Button variant="ghost" size="sm" onClick={() => setSelectedCustomer(customer)}>
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-
-          {/* Mobile Card View */}
-          <div className="sm:hidden space-y-4">
-            {filteredCustomers.map((customer) => (
-              <Card key={customer.id} className="p-4">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="font-medium">{customer.name}</div>
-                    <div className="text-sm text-muted-foreground flex items-center">
-                      <MapPin className="h-3 w-3 mr-1" />
-                      {customer.address.split(",")[0]}
                     </div>
-                  </div>
-                  <Badge variant={customer.status === "VIP" ? "default" : "secondary"}>{customer.status}</Badge>
-                </div>
-                <div className="mt-2 space-y-1">
-                  <div className="flex items-center text-sm">
-                    <Mail className="h-3 w-3 mr-1" />
-                    {customer.email}
-                  </div>
-                  <div className="flex items-center text-sm">
-                    <Phone className="h-3 w-3 mr-1" />
-                    {customer.phone}
-                  </div>
-                </div>
-                <div className="mt-2 flex items-center justify-between">
-                  <Badge variant="secondary">{customer.totalRepairs} repairs</Badge>
-                  <div className="text-sm text-muted-foreground">{customer.lastVisit}</div>
-                </div>
-                <div className="mt-4 flex justify-end space-x-2">
-                  <Button variant="ghost" size="sm" onClick={() => setSelectedCustomer(customer)}>
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                </div>
-              </Card>
-            ))}
-          </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="space-y-1">
+                      <div className="flex items-center text-sm">
+                        <Mail className="h-3 w-3 mr-1" />
+                        {customer.email}
+                      </div>
+                      <div className="flex items-center text-sm">
+                        <Phone className="h-3 w-3 mr-1" />
+                        {customer.phone}
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="secondary">{customer.totalRepairs} repairs</Badge>
+                  </TableCell>
+                  <TableCell>{customer.lastVisit}</TableCell>
+                  <TableCell>
+                    <Badge variant={customer.status === "VIP" ? "default" : "secondary"}>{customer.status}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center space-x-2">
+                      <Button variant="ghost" size="sm" onClick={() => setSelectedCustomer(customer)}>
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="sm">
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
 
       {/* Customer Details Dialog */}
       <Dialog open={!!selectedCustomer} onOpenChange={() => setSelectedCustomer(null)}>
-        <DialogContent className="max-w-[90vw] sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>Customer Details</DialogTitle>
             <DialogDescription>Complete information for {selectedCustomer?.name}</DialogDescription>
           </DialogHeader>
           {selectedCustomer && (
             <div className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label className="text-sm font-medium">Name</Label>
                   <p className="text-sm text-muted-foreground">{selectedCustomer.name}</p>
