@@ -16,14 +16,53 @@ export default function RegisterPage() {
   });
 
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false); // added loading state
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value }); // use name instead of id
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Clear error when user starts typing
+    if (error) setError('');
+  };
+
+  const validateForm = () => {
+    if (!formData.firstName.trim()) {
+      setError('First name is required');
+      return false;
+    }
+    if (!formData.lastName.trim()) {
+      setError('Last name is required');
+      return false;
+    }
+    if (!formData.email.trim()) {
+      setError('Email is required');
+      return false;
+    }
+    if (!formData.password.trim()) {
+      setError('Password is required');
+      return false;
+    }
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return false;
+    }
+    
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address');
+      return false;
+    }
+    
+    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
     setLoading(true);
     setError('');
 
@@ -47,7 +86,8 @@ export default function RegisterPage() {
       // redirect on success
       router.push('/auth/login');
     } catch (err) {
-      setError('Something went wrong');
+      console.error('Registration error:', err);
+      setError('Something went wrong. Please try again.');
       setLoading(false);
     }
   };
@@ -78,13 +118,14 @@ export default function RegisterPage() {
                   placeholder={`Enter your ${field}`}
                   value={(formData as any)[field]}
                   onChange={handleChange}
-                  required
+                  required={field === 'firstName' || field === 'lastName' || field === 'email' || field === 'password'}
+                  disabled={loading}
                 />
               </div>
             ))}
             <button
               type="submit"
-              className="w-full text-white p-2 rounded-md transition duration-200 bg-gradient-to-r from-cyan-700 to-emerald-600 hover:from-cyan-800 hover:to-emerald-700"
+              className="w-full text-white p-2 rounded-md transition duration-200 bg-gradient-to-r from-cyan-700 to-emerald-600 hover:from-cyan-800 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={loading}
             >
               {loading ? 'Registering...' : 'Register'}

@@ -16,10 +16,33 @@ export default function LoginPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    // Clear error when user starts typing
+    if (error) setError('');
+  };
+
+  const validateForm = () => {
+    if (!form.email.trim()) {
+      setError('Email is required');
+      return false;
+    }
+    if (!form.password.trim()) {
+      setError('Password is required');
+      return false;
+    }
+    if (form.password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return false;
+    }
+    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
     setError('');
     setLoading(true);
 
@@ -43,7 +66,8 @@ export default function LoginPage() {
       // On success, redirect to dashboard
       router.push('/dashboard');
     } catch (err) {
-      setError('Something went wrong');
+      console.error('Login error:', err);
+      setError('Something went wrong. Please try again.');
       setLoading(false);
     }
   };
@@ -72,6 +96,7 @@ export default function LoginPage() {
                 value={form.email}
                 onChange={handleChange}
                 required
+                disabled={loading}
               />
             </div>
             <div>
@@ -84,11 +109,12 @@ export default function LoginPage() {
                 value={form.password}
                 onChange={handleChange}
                 required
+                disabled={loading}
               />
             </div>
             <button
               type="submit"
-              className="w-full text-white p-2 rounded-md transition duration-200 bg-gradient-to-r from-cyan-700 to-emerald-600 hover:from-cyan-800 hover:to-emerald-700"
+              className="w-full text-white p-2 rounded-md transition duration-200 bg-gradient-to-r from-cyan-700 to-emerald-600 hover:from-cyan-800 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={loading}
             >
               {loading ? 'Logging in...' : 'Login'}
