@@ -1,25 +1,21 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Plus, Search, Eye, Edit, FileText, Smartphone, Users } from "lucide-react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Plus, Search, Eye, Edit, FileText, Smartphone } from "lucide-react"
 
 const jobSheets = [
   {
@@ -59,19 +55,7 @@ const jobSheets = [
 
 export default function JobSheetsPage() {
   const [searchTerm, setSearchTerm] = useState("")
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [selectedJobSheet, setSelectedJobSheet] = useState<(typeof jobSheets)[0] | null>(null)
-
-  const [customerSearch, setCustomerSearch] = useState("")
-
-  const [customerType, setCustomerType] = useState("existing")
-  const [newCustomerData, setNewCustomerData] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    address: "",
-    notes: "",
-  })
 
   const filteredJobSheets = jobSheets.filter(
     (job) =>
@@ -106,26 +90,6 @@ export default function JobSheetsPage() {
     }
   }
 
-  const handleNewCustomerChange = (field: string, value: string) => {
-    setNewCustomerData((prev) => ({ ...prev, [field]: value }))
-  }
-
-  const resetForm = () => {
-    setNewCustomerData({
-      name: "",
-      phone: "",
-      email: "",
-      address: "",
-      notes: "",
-    })
-    setCustomerType("existing")
-  }
-
-  const handleDialogClose = () => {
-    setIsCreateDialogOpen(false)
-    resetForm()
-  }
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -133,309 +97,12 @@ export default function JobSheetsPage() {
           <h1 className="text-3xl font-bold tracking-tight">Job Sheet Management</h1>
           <p className="text-muted-foreground">Create and manage repair job sheets efficiently</p>
         </div>
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Create Job Sheet
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Create New Job Sheet</DialogTitle>
-              <DialogDescription>Fill in the details to create a new repair job sheet.</DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              {/* Customer Information - Tabbed Interface */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Customer Information</h3>
-                <Tabs defaultValue="existing" className="w-full">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="existing">Select Existing</TabsTrigger>
-                    <TabsTrigger value="new">Create New</TabsTrigger>
-                  </TabsList>
-
-                  <TabsContent value="existing" className="space-y-4">
-                    <div>
-                      <Label htmlFor="customer-search">Search Customer</Label>
-                      <div className="relative">
-                        <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="customer-search"
-                          placeholder="Search by name, phone, or email..."
-                          value={customerSearch}
-                          onChange={(e) => setCustomerSearch(e.target.value)}
-                          className="pl-10"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="existing-customer">Customer</Label>
-                        <Select>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select customer" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="sarah">Sarah Johnson - (555) 123-4567</SelectItem>
-                            <SelectItem value="mike">Mike Chen - (555) 987-6543</SelectItem>
-                            <SelectItem value="emily">Emily Davis - (555) 456-7890</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label htmlFor="existing-phone">Phone Number</Label>
-                        <Input id="existing-phone" placeholder="Auto-filled from customer" disabled />
-                      </div>
-                    </div>
-
-                    <div className="text-sm text-muted-foreground">
-                      <p>Can't find the customer? Switch to "Create New" tab to add them.</p>
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="new" className="space-y-4">
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-                      <div className="flex items-center space-x-2">
-                        <Users className="h-4 w-4 text-blue-600" />
-                        <p className="text-sm text-blue-800">
-                          Creating a new customer will automatically add them to your customer database.
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="new-customer-name">Full Name *</Label>
-                        <Input
-                          id="new-customer-name"
-                          placeholder="John Doe"
-                          value={newCustomerData.name}
-                          onChange={(e) => handleNewCustomerChange("name", e.target.value)}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="new-customer-phone">Phone Number *</Label>
-                        <Input
-                          id="new-customer-phone"
-                          type="tel"
-                          placeholder="+1 (555) 123-4567"
-                          value={newCustomerData.phone}
-                          onChange={(e) => handleNewCustomerChange("phone", e.target.value)}
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <Label htmlFor="new-customer-email">Email Address</Label>
-                      <Input
-                        id="new-customer-email"
-                        type="email"
-                        placeholder="john@example.com"
-                        value={newCustomerData.email}
-                        onChange={(e) => handleNewCustomerChange("email", e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="new-customer-address">Address</Label>
-                      <Textarea
-                        id="new-customer-address"
-                        placeholder="123 Main St, City, State 12345"
-                        rows={2}
-                        value={newCustomerData.address}
-                        onChange={(e) => handleNewCustomerChange("address", e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="new-customer-notes">Customer Notes</Label>
-                      <Textarea
-                        id="new-customer-notes"
-                        placeholder="Any special notes about the customer..."
-                        rows={2}
-                        value={newCustomerData.notes}
-                        onChange={(e) => handleNewCustomerChange("notes", e.target.value)}
-                      />
-                    </div>
-                  </TabsContent>
-                </Tabs>
-              </div>
-
-              {/* Device Information */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Device Information</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="brand">Brand</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select brand" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="apple">Apple</SelectItem>
-                        <SelectItem value="samsung">Samsung</SelectItem>
-                        <SelectItem value="google">Google</SelectItem>
-                        <SelectItem value="oneplus">OnePlus</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="model">Model</Label>
-                    <Input id="model" placeholder="e.g., iPhone 12 Pro" />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="imei">IMEI/Serial Number</Label>
-                    <Input id="imei" placeholder="Device IMEI or serial" />
-                  </div>
-                  <div>
-                    <Label htmlFor="color">Color</Label>
-                    <Input id="color" placeholder="Device color" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Issue Details */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Issue Details</h3>
-                <div>
-                  <Label htmlFor="issue">Primary Issue</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select issue type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="screen">Screen Damage</SelectItem>
-                      <SelectItem value="battery">Battery Issues</SelectItem>
-                      <SelectItem value="water">Water Damage</SelectItem>
-                      <SelectItem value="charging">Charging Problems</SelectItem>
-                      <SelectItem value="software">Software Issues</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="description">Detailed Description</Label>
-                  <Textarea id="description" placeholder="Describe the issue in detail..." rows={3} />
-                </div>
-                <div>
-                  <Label htmlFor="symptoms">Symptoms Checklist</Label>
-                  <div className="grid grid-cols-2 gap-2 mt-2">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="cracked-screen" />
-                      <Label htmlFor="cracked-screen" className="text-sm">
-                        Cracked Screen
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="no-display" />
-                      <Label htmlFor="no-display" className="text-sm">
-                        No Display
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="no-power" />
-                      <Label htmlFor="no-power" className="text-sm">
-                        No Power
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="water-damage" />
-                      <Label htmlFor="water-damage" className="text-sm">
-                        Water Damage
-                      </Label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Repair Details */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Repair Details</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="priority">Priority</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select priority" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="low">Low</SelectItem>
-                        <SelectItem value="medium">Medium</SelectItem>
-                        <SelectItem value="high">High</SelectItem>
-                        <SelectItem value="urgent">Urgent</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="technician">Assigned Technician</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select technician" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="john">John Doe</SelectItem>
-                        <SelectItem value="jane">Jane Smith</SelectItem>
-                        <SelectItem value="mike">Mike Wilson</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="estimated-cost">Estimated Cost (₹)</Label>
-                    <Input id="estimated-cost" type="number" placeholder="0.00" />
-                  </div>
-                  <div>
-                    <Label htmlFor="estimated-time">Estimated Time (hours)</Label>
-                    <Input id="estimated-time" type="number" placeholder="2" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Additional Notes */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Additional Information</h3>
-                <div>
-                  <Label htmlFor="customer-notes">Customer Notes</Label>
-                  <Textarea id="customer-notes" placeholder="Any special instructions from customer..." rows={2} />
-                </div>
-                <div>
-                  <Label htmlFor="internal-notes">Internal Notes</Label>
-                  <Textarea id="internal-notes" placeholder="Internal notes for technicians..." rows={2} />
-                </div>
-              </div>
-            </div>
-            {/* Summary Section */}
-            <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-              <h4 className="font-medium text-sm">Summary</h4>
-              <div className="text-sm text-muted-foreground space-y-1">
-                {customerType === "new" ? (
-                  <>
-                    <p>✓ New customer will be created: {newCustomerData.name || "Not specified"}</p>
-                    <p>✓ Job sheet will be created and linked to new customer</p>
-                    <p>✓ Customer will be added to your database</p>
-                  </>
-                ) : (
-                  <>
-                    <p>✓ Job sheet will be created for existing customer</p>
-                    <p>✓ Customer information will be auto-populated</p>
-                  </>
-                )}
-              </div>
-            </div>
-            <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={handleDialogClose}>
-                Cancel
-              </Button>
-              <Button onClick={handleDialogClose}>
-                {customerType === "new" ? "Create Job Sheet & Customer" : "Create Job Sheet"}
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <Button asChild>
+          <Link href="/dashboard/job-sheets/create">
+            <Plus className="mr-2 h-4 w-4" />
+            Create Job Sheet
+          </Link>
+        </Button>
       </div>
 
       <Card>
