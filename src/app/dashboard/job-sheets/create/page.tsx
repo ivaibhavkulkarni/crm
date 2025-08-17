@@ -11,7 +11,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Search, Users, CalendarDays, ChevronLeft, ChevronRight } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Search, Users, CalendarDays, ChevronLeft, ChevronRight, X } from "lucide-react"
 
 export default function CreateJobSheetPage() {
   const router = useRouter()
@@ -25,6 +26,26 @@ export default function CreateJobSheetPage() {
     address: "",
     notes: "",
   })
+
+  // Referral source
+  const [referral, setReferral] = useState("")
+  const [referralOther, setReferralOther] = useState("")
+
+  // Additional symptoms and "Other" support
+  const [customSymptoms, setCustomSymptoms] = useState<string[]>([])
+  const [otherSymptomInput, setOtherSymptomInput] = useState("")
+  const symptomSuggestions = [
+    "Overheating",
+    "Slow Performance",
+    "Camera Not Working",
+    "Audio Issues",
+    "Network Connectivity",
+    "Touchscreen Unresponsive",
+    "Bluetooth Issues",
+    "Wi‑Fi Issues",
+    "Microphone Not Working",
+    "Speaker Distortion",
+  ]
 
   // Estimated completion date picker state
   const [estimatedDate, setEstimatedDate] = useState<Date | null>(null)
@@ -289,6 +310,96 @@ export default function CreateJobSheetPage() {
                     Water Damage
                   </Label>
                 </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="overheating" />
+                  <Label htmlFor="overheating" className="text-sm">
+                    Overheating
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="slow-performance" />
+                  <Label htmlFor="slow-performance" className="text-sm">
+                    Slow Performance
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="camera-issues" />
+                  <Label htmlFor="camera-issues" className="text-sm">
+                    Camera Issues
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="audio-issues" />
+                  <Label htmlFor="audio-issues" className="text-sm">
+                    Audio Issues
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="network-issues" />
+                  <Label htmlFor="network-issues" className="text-sm">
+                    Network Issues
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="touch-unresponsive" />
+                  <Label htmlFor="touch-unresponsive" className="text-sm">
+                    Touchscreen Unresponsive
+                  </Label>
+                </div>
+              </div>
+              <div className="mt-3 space-y-2">
+                <Label>Other Symptoms</Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    placeholder="Type and press Enter to add"
+                    value={otherSymptomInput}
+                    onChange={(e) => setOtherSymptomInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && otherSymptomInput.trim()) {
+                        if (!customSymptoms.includes(otherSymptomInput.trim())) {
+                          setCustomSymptoms([...customSymptoms, otherSymptomInput.trim()])
+                        }
+                        setOtherSymptomInput("")
+                      }
+                    }}
+                  />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" type="button">Suggestions</Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                      {symptomSuggestions
+                        .filter((s) => s.toLowerCase().includes(otherSymptomInput.toLowerCase()))
+                        .map((s) => (
+                          <DropdownMenuItem
+                            key={s}
+                            onClick={() => {
+                              if (!customSymptoms.includes(s)) setCustomSymptoms([...customSymptoms, s])
+                            }}
+                          >
+                            {s}
+                          </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+                {customSymptoms.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {customSymptoms.map((s) => (
+                      <span key={s} className="inline-flex items-center gap-1 rounded-md bg-accent px-2 py-1 text-xs">
+                        {s}
+                        <button
+                          type="button"
+                          onClick={() => setCustomSymptoms(customSymptoms.filter((x) => x !== s))}
+                          className="opacity-70 hover:opacity-100"
+                          aria-label={`Remove ${s}`}
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -418,6 +529,31 @@ export default function CreateJobSheetPage() {
               <Label htmlFor="internal-notes">Internal Notes</Label>
               <Textarea id="internal-notes" placeholder="Internal notes for technicians..." rows={2} />
             </div>
+            <div>
+              <Label htmlFor="referral">Referral Source</Label>
+              <Select value={referral} onValueChange={setReferral}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select referral source" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="friends">Friends</SelectItem>
+                  <SelectItem value="social">Social Media</SelectItem>
+                  <SelectItem value="website">Website</SelectItem>
+                  <SelectItem value="walkin">Walk-in</SelectItem>
+                  <SelectItem value="ads">Ads</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+              {referral === "other" && (
+                <div className="mt-2">
+                  <Input
+                    placeholder="Please specify"
+                    value={referralOther}
+                    onChange={(e) => setReferralOther(e.target.value)}
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="bg-gray-50 rounded-lg p-4 space-y-2">
@@ -434,6 +570,10 @@ export default function CreateJobSheetPage() {
                   <p>✓ Job sheet will be created for existing customer</p>
                   <p>✓ Customer information will be auto-populated</p>
                 </>
+              )}
+              <p>✓ Referral Source: {referral || "Not specified"}{referral === "other" && referralOther ? ` – ${referralOther}` : ""}</p>
+              {customSymptoms.length > 0 && (
+                <p>✓ Other Symptoms: {customSymptoms.join(", ")}</p>
               )}
             </div>
           </div>
