@@ -6,23 +6,13 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
+import dynamic from "next/dynamic"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import {
-  LineChart,
-  Line,
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-  Legend,
-} from "recharts"
+const RevenueTrendChart = dynamic(() => import("@/components/analytics/RevenueTrendChart"), { ssr: false })
+const RepairTypeDistribution = dynamic(() => import("@/components/analytics/RepairTypeDistribution"), { ssr: false })
+const RevenueAnalysisChart = dynamic(() => import("@/components/analytics/RevenueAnalysisChart"), { ssr: false })
+const MonthlyRepairVolumeChart = dynamic(() => import("@/components/analytics/MonthlyRepairVolumeChart"), { ssr: false })
+// removed direct heavy recharts primitives here; use a dynamic chart component instead
 import {
   TrendingUp,
   TrendingDown,
@@ -36,6 +26,7 @@ import {
   BarChart3,
   Activity,
 } from "lucide-react"
+import { CartesianGrid, Line, ResponsiveContainer, XAxis, YAxis, LineChart } from "recharts"
 
 // Sample data for charts
 const revenueData = [
@@ -210,46 +201,7 @@ export default function AnalyticsPage() {
               <CardDescription>Monthly revenue and repair volume over the past year</CardDescription>
             </CardHeader>
             <CardContent>
-              <ChartContainer
-                config={{
-                  revenue: {
-                    label: "Revenue",
-                    color: "hsl(var(--chart-1))",
-                  },
-                  repairs: {
-                    label: "Repairs",
-                    color: "hsl(var(--chart-2))",
-                  },
-                }}
-                className="h-[300px]"
-              >
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={revenueData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
-                    <YAxis yAxisId="left" />
-                    <YAxis yAxisId="right" orientation="right" />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <Legend />
-                    <Line
-                      yAxisId="left"
-                      type="monotone"
-                      dataKey="revenue"
-                      stroke="var(--color-revenue)"
-                      strokeWidth={2}
-                      name="Revenue (₹)"
-                    />
-                    <Line
-                      yAxisId="right"
-                      type="monotone"
-                      dataKey="repairs"
-                      stroke="var(--color-repairs)"
-                      strokeWidth={2}
-                      name="Repairs"
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </ChartContainer>
+              <RevenueTrendChart data={revenueData} />
             </CardContent>
           </Card>
 
@@ -261,34 +213,7 @@ export default function AnalyticsPage() {
                 <CardDescription>Most common repair types</CardDescription>
               </CardHeader>
               <CardContent>
-                <ChartContainer
-                  config={{
-                    value: {
-                      label: "Percentage",
-                      color: "hsl(var(--chart-1))",
-                    },
-                  }}
-                  className="h-[250px]"
-                >
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={repairTypeData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={60}
-                        outerRadius={100}
-                        paddingAngle={5}
-                        dataKey="value"
-                      >
-                        {repairTypeData.map((entry, index) => (
-                          <Cell key={`cell-₹{index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <ChartTooltip content={<ChartTooltipContent />} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </ChartContainer>
+                <RepairTypeDistribution data={repairTypeData} />
                 <div className="mt-4 space-y-2">
                   {repairTypeData.map((item, index) => (
                     <div key={index} className="flex items-center justify-between text-sm">
@@ -367,31 +292,7 @@ export default function AnalyticsPage() {
               <CardDescription>Detailed revenue breakdown and trends</CardDescription>
             </CardHeader>
             <CardContent>
-              <ChartContainer
-                config={{
-                  revenue: {
-                    label: "Revenue",
-                    color: "hsl(var(--chart-1))",
-                  },
-                }}
-                className="h-[400px]"
-              >
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={revenueData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <Area
-                      type="monotone"
-                      dataKey="revenue"
-                      stroke="var(--color-revenue)"
-                      fill="var(--color-revenue)"
-                      fillOpacity={0.3}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </ChartContainer>
+              <RevenueAnalysisChart data={revenueData} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -436,7 +337,7 @@ export default function AnalyticsPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">3</div>
-                <p className="text-xs text-muted-foreground text-red-600">Needs attention</p>
+                <p className="text-xs text-red-600">Needs attention</p>
               </CardContent>
             </Card>
           </div>
@@ -478,25 +379,7 @@ export default function AnalyticsPage() {
               <CardDescription>Number of repairs completed each month</CardDescription>
             </CardHeader>
             <CardContent>
-              <ChartContainer
-                config={{
-                  repairs: {
-                    label: "Repairs",
-                    color: "hsl(var(--chart-2))",
-                  },
-                }}
-                className="h-[300px]"
-              >
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={revenueData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <Bar dataKey="repairs" fill="var(--color-repairs)" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </ChartContainer>
+              <MonthlyRepairVolumeChart data={revenueData} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -511,7 +394,7 @@ export default function AnalyticsPage() {
                   {getTrendIcon(metric.trend)}
                 </CardHeader>
                 <CardContent>
-                  <div className={`text-2xl font-bold ₹{getStatusColor(metric.status)}`}>{metric.value}</div>
+                  <div className={`text-2xl font-bold ${getStatusColor(metric.status)}`}>{metric.value}</div>
                   <p className="text-xs text-muted-foreground">
                     {metric.trend > 0 ? "+" : ""}
                     {metric.trend}% from last period

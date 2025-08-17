@@ -1,6 +1,5 @@
 "use client"
 
-import { useUser } from "@/hooks/useUser"
 import { useRouter } from "next/navigation"
 
 import type * as React from "react"
@@ -81,9 +80,7 @@ const data = {
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  
-  const user = useUser();
+export function AppSidebar({ user, ...props }: React.ComponentProps<typeof Sidebar> & { user: { name: string; company: string; initials: string } }) {
   const router = useRouter();
 
   const handleLogout = async () => {
